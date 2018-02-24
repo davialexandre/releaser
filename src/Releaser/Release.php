@@ -3,20 +3,19 @@
 namespace Releaser;
 
 use Github\Client;
+use Releaser\Github\Comparison;
 use Releaser\Github\PullRequest;
 use Releaser\Github\Repository;
 
 class Release
 {
     private $repository;
-    private $headBranch;
-    private $baseBranch;
+    private $comparison;
 
     public function __construct(Client $githubClient, $repo, $base, $head)
     {
         $this->repository = new Repository($githubClient, $repo);
-        $this->baseBranch = $this->repository->getBranch($base);
-        $this->headBranch = $this->repository->getBranch($head);
+        $this->comparison = $this->compareBranches($base, $head);
     }
 
     /**
@@ -24,10 +23,8 @@ class Release
      */
     public function getPullRequests(): array
     {
-        $commits = $this->repository->compareBranches($this->baseBranch, $this->headBranch);
-
         $pullRequests = [];
-        foreach ($commits as $commit) {
+        foreach ($this->comparison->getCommits() as $commit) {
             $pullRequestID = $commit->getMergedPullRequestID();
 
             if (!$pullRequestID) {
@@ -39,5 +36,13 @@ class Release
         }
 
         return $pullRequests;
+    }
+
+    private function compareBranches($base, $head): Comparison
+    {
+        $baseBranch = $this->repository->getBranch($base);
+        $headBranch = $this->repository->getBranch($head);
+
+        return $this->repository->compareBranches($baseBranch, $headBranch);
     }
 }

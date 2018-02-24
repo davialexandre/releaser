@@ -25,18 +25,14 @@ class Repository
     /**
      * @param Branch $base
      * @param Branch $head
-     * @return Commit[]
+     *
+     * @return Comparison
      */
-    public function compareBranches(Branch $base, Branch $head): array
+    public function compareBranches(Branch $base, Branch $head): Comparison
     {
-        $compareData = $this->compareApi($base->getCommit(), $head->getCommit());
-        $commits = [];
+        $comparisonData = $this->compareApi($base->getCommit(), $head->getCommit());
 
-        foreach ($compareData['commits'] as $commitData) {
-            $commits[] = new Commit($commitData);
-        }
-
-        return $commits;
+        return new Comparison($comparisonData);
     }
 
     public function getPullRequestById($id): PullRequest
