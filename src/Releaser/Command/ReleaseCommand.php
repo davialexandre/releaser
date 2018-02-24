@@ -3,6 +3,7 @@
 namespace Releaser\Command;
 
 use Releaser\Release;
+use Releaser\View\ReleaseDescription;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -42,7 +43,8 @@ class ReleaseCommand extends Command
             $input->getArgument('head')
         );
 
-        $output->writeln($release->getDescription());
+        $releaseDescription = new ReleaseDescription($release);
+        $output->writeln($releaseDescription->render());
     }
 
     private function getGithubClient()

@@ -5,7 +5,6 @@ namespace Releaser;
 use Github\Client;
 use Releaser\Github\PullRequest;
 use Releaser\Github\Repository;
-use Releaser\View\PullRequestDescription;
 
 class Release
 {
@@ -20,23 +19,14 @@ class Release
         $this->headBranch = $this->repository->getBranch($head);
     }
 
-    public function getDescription()
-    {
-        $mergedPullRequests = $this->getMergedPullRequests();
-
-        $pullRequestDescription = new PullRequestDescription($mergedPullRequests);
-
-        return $pullRequestDescription->render();
-    }
-
     /**
      * @return PullRequest[]
      */
-    private function getMergedPullRequests(): array
+    public function getPullRequests(): array
     {
         $commits = $this->repository->compareBranches($this->baseBranch, $this->headBranch);
 
-        $mergedPullRequests = [];
+        $pullRequests = [];
         foreach ($commits as $commit) {
             $pullRequestID = $commit->getMergedPullRequestID();
 
@@ -45,9 +35,9 @@ class Release
             }
 
             $pullRequest = $this->repository->getPullRequestById($pullRequestID);
-            $mergedPullRequests[] = $pullRequest;
+            $pullRequests[] = $pullRequest;
         }
 
-        return $mergedPullRequests;
+        return $pullRequests;
     }
 }

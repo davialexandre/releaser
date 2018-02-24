@@ -2,13 +2,15 @@
 
 namespace Releaser\View;
 
-class PullRequestDescription
-{
-    private $pullRequests;
+use Releaser\Release;
 
-    public function __construct(array $pullRequests)
+class ReleaseDescription
+{
+    private $release;
+
+    public function __construct(Release $release)
     {
-        $this->pullRequests = $pullRequests;
+        $this->release = $release;
     }
 
     public function render()
@@ -36,7 +38,7 @@ class PullRequestDescription
     private function groupAndSortPullRequestsByAuthor(): array
     {
         $pullRequestsGroupByAuthor = [];
-        foreach ($this->pullRequests as $pullRequest) {
+        foreach ($this->release->getPullRequests() as $pullRequest) {
             $pullRequestsGroupByAuthor[$pullRequest->getAuthor()][] = $pullRequest;
         }
 
