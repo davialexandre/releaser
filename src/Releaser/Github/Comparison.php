@@ -24,4 +24,14 @@ class Comparison
 
         return $commits;
     }
+
+    public function getTotalNumberOfCommits(): int
+    {
+        return $this->comparisonData['total_commits'];
+    }
+
+    public function getNumberOfCommits(): int
+    {
+        return count($this->comparisonData['commits']);
+    }
 }

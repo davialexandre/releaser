@@ -38,6 +38,16 @@ class Release
         return $pullRequests;
     }
 
+    public function getTotalNumberOfCommits(): int
+    {
+        return $this->comparison->getTotalNumberOfCommits();
+    }
+
+    public function getNumberOfCommits(): int
+    {
+        return $this->comparison->getNumberOfCommits();
+    }
+
     private function compareBranches($base, $head): Comparison
     {
         $baseBranch = $this->repository->getBranch($base);
