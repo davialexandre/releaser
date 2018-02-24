@@ -2,9 +2,7 @@
 
 namespace Releaser\Command;
 
-use Releaser\Github\PullRequest;
-use Releaser\Github\Repository;
-use Releaser\View\PullRequestDescription;
+use Releaser\Release;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -36,46 +34,15 @@ class ReleaseCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $mergedPullRequests = $this->getMergedPullRequests(
+        $client = $this->getGithubClient();
+        $release = new Release(
+            $client,
             $input->getArgument('repo'),
             $input->getArgument('base'),
             $input->getArgument('head')
         );
 
-        $pullRequestDescription = new PullRequestDescription($mergedPullRequests);
-
-        $output->writeln($pullRequestDescription->render());
-    }
-
-    /**
-     * @param string $repo
-     * @param string $base
-     * @param string $head
-     *
-     * @return PullRequest[]
-     */
-    private function getMergedPullRequests(string $repo, string $base, string $head): array
-    {
-        $repository = new Repository($this->getGithubClient(), $repo);
-
-        $baseBranch = $repository->getBranch($base);
-        $headBranch = $repository->getBranch($head);
-
-        $commits = $repository->compareBranches($baseBranch, $headBranch);
-
-        $mergedPullRequests = [];
-        foreach ($commits as $commit) {
-            $pullRequestID = $commit->getMergedPullRequestID();
-
-            if (!$pullRequestID) {
-                continue;
-            }
-
-            $pullRequest = $repository->getPullRequestById($pullRequestID);
-            $mergedPullRequests[] = $pullRequest;
-        }
-
-        return $mergedPullRequests;
+        $output->writeln($release->getDescription());
     }
 
     private function getGithubClient()
