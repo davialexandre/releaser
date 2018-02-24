@@ -1,0 +1,22 @@
+{
+  "name": "davialexandre/releaser",
+  "description": "A script to create release Pull Requests",
+  "minimum-stability": "dev",
+  "license": "mit",
+  "authors": [
+    {
+      "name": "Davi Alexandre",
+      "email": "davi@davialexandre.com.br"
+    }
+  ],
+  "require": {
+    "knplabs/github-api": "^2.7",
+    "php-http/guzzle6-adapter": "^1.1",
+    "symfony/console": "^4.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "": "src/"
+    }
+  }
+}
