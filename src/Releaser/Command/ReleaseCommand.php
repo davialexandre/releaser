@@ -4,6 +4,7 @@ namespace Releaser\Command;
 
 use Releaser\Github\PullRequest;
 use Releaser\Github\Repository;
+use Releaser\View\PullRequestDescription;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -41,15 +42,9 @@ class ReleaseCommand extends Command
             $input->getArgument('head')
         );
 
-        $pullRequestsGroupByAuthor = [];
-        foreach ($mergedPullRequests as $pullRequest) {
-            $pullRequestsGroupByAuthor[$pullRequest->getAuthor()][] = [
-                'title' => $pullRequest->getTitle(),
-                'url' => $pullRequest->getUrl(),
-            ];
-        }
+        $pullRequestDescription = new PullRequestDescription($mergedPullRequests);
 
-        var_dump($pullRequestsGroupByAuthor);
+        $output->writeln($pullRequestDescription->render());
     }
 
     /**
