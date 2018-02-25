@@ -67,7 +67,6 @@ class ReleaseCommand extends Command
         $config = ConfigFactory::create();
 
         if($config->getGithubAuthToken()) {
-            var_dump('Authenticating');
             $client->authenticate(
                 $config->getGithubAuthToken(),
                 null,

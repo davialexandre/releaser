@@ -15,7 +15,7 @@ class Config
      */
     private $config;
 
-    public function __construct(object $config)
+    public function __construct(\stdClass $config)
     {
         $this->config = $config;
     }
