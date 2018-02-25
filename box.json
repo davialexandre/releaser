@@ -1,0 +1,10 @@
+{
+  "directories": [
+    "vendor",
+    "src"
+  ],
+  "git-version": "package-version",
+  "main": "bin/main",
+  "output": "releaser.phar",
+  "stub": true
+}
