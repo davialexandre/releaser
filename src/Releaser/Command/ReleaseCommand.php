@@ -2,6 +2,7 @@
 
 namespace Releaser\Command;
 
+use Releaser\ConfigFactory;
 use Releaser\Release;
 use Releaser\View\ReleaseDescription;
 use Symfony\Component\Console\Command\Command;
@@ -51,15 +52,22 @@ class ReleaseCommand extends Command
         $output->writeln($releaseDescription->render());
     }
 
+    /**
+     * @return \Github\Client
+     */
     private function getGithubClient()
     {
         $client = new \Github\Client();
+        $config = ConfigFactory::create();
 
-        //$client->authenticate(
-        //    $token,
-        //    null,
-        //    \Github\Client::AUTH_HTTP_TOKEN
-        //);
+        if($config->getGithubAuthToken()) {
+            var_dump('Authenticating');
+            $client->authenticate(
+                $config->getGithubAuthToken(),
+                null,
+                \Github\Client::AUTH_HTTP_TOKEN
+            );
+        }
 
         return $client;
     }
