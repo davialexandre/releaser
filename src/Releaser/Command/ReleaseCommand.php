@@ -10,6 +10,11 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Creates a new Release
+ *
+ * @package Releaser\Command
+ */
 class ReleaseCommand extends Command
 {
     protected function configure(): void
@@ -17,10 +22,11 @@ class ReleaseCommand extends Command
         $this
             ->setName('release')
             ->setDescription('Creates a new release')
+            ->setHelp('Example usage: releaser release davialexandre/releaser master develop')
             ->addArgument(
                 'repo',
                 InputArgument::REQUIRED,
-                'The repo to which the release will be created'
+                'The repo to which the release will be created, in a format like "davialexandre/release" (username/repository)'
             )
             ->addArgument(
                 'base',
