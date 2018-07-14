@@ -1,6 +1,10 @@
 # Releaser
 
-Releaser is a small utility to create Release's descriptions where a Release is basically the merge from branch B to branch A. It will check the commits between the two branches, verify which ones are for Pull Requests merges and list all the Pull Requests, grouped by their author's usernames.
+Releaser is a small utility to help you release your work from one branch of a repo to another. 
+
+By default, it will only output the Release's description. To create the description, it will check the commits between the two branches, verify which ones are for Pull Requests merges and list all the Pull Requests, grouped by their author's usernames.
+
+Optionally, it can also create a Pull Request with this description.
 
 ## Installation
 
@@ -71,6 +75,16 @@ Consider this git tree with multiple levels of branches:
 Now, say you want to release `staging` to `master`  and that all the branches in this example have already been merged to its "parent" branch. In this scenario, by default, the release description will include the Pull Requests for all branches (even `sub-feature-1` and `sub-feature-2`). This happens, because the merge commits for these branches are part of the history of its "parents". 
 
 Sometimes, however, you might prefer for the description to include only the Pull Requests sent directly to the branch you want to release. In that case, the `--exclude-sub-pull-requests` option can be used. Using this option with the previous example, only the Pull Requests for `feature1` and `feature2` will be include in the description. 
+
+### Creating Pull Requests
+
+By default the releaser will only output the Release's description. Optionally, it can also create a Pull Request with this description. To do that, the `--create-pull-request` option can be used. In that case, the Pull Request URL will be outputed.
+
+It is also possible to specify the title of the Pull Request using the `---title=<TITLE>` option. If that is omitted, the default title will be "Sync \<base\> with \<head\>", where `<base>` and `<head>` will be replace by the values of the respective arguments passed to the tool.
+
+> **Important**
+>
+> In order to be able create Pull Requests, a Github Auth Token will be necessary (see [Configuration](#configuration)). It is also necessary for the owner of the token to have permission to create Pull Requests in the repository.
  
 ## Known limitations
 

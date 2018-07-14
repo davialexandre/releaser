@@ -130,6 +130,34 @@ class Repository
     }
 
     /**
+     * Creates a new Pull Request in this repository.
+     *
+     * @param string $title
+     * @param string $description
+     * @param string $base
+     * @param string $head
+     *
+     * @return PullRequest
+     *
+     * @throws \Github\Exception\MissingArgumentException
+     */
+    public function createPullRequest(string $title, string $description, string $base, string $head): PullRequest
+    {
+        $pullRequestData = $this->pullRequestApi()->create(
+            $this->repositoryInfo['username'],
+            $this->repositoryInfo['repository'],
+            [
+                'title' => $title,
+                'body' => $description,
+                'base' => $base,
+                'head' => $head
+            ]
+        );
+
+        return new PullRequest($pullRequestData);
+    }
+
+    /**
      * Parses a string like "<username|organization>/<repository" into an array like:
      *
      * [

@@ -44,6 +44,18 @@ class ReleaseCommand extends Command
                 'x',
                 InputOption::VALUE_NONE,
                 'When passed, only Pull Requests sent to the head branch will be included in the description'
+            )
+            ->addOption(
+                'create-pull-request',
+                'c',
+                InputOption::VALUE_NONE,
+                'When passed, instead of only printing the Release description it will create a Pull Request for the release and print its link'
+            )
+            ->addOption(
+                'title',
+                't',
+                InputOption::VALUE_REQUIRED,
+                'The title of the Pull Request. If not informed, the default will be "Sync <base> with <head>"'
             );
     }
 
@@ -57,11 +69,21 @@ class ReleaseCommand extends Command
             $input->getArgument('head')
         );
 
+        if ($input->getOption('title')) {
+            $release->setTitle($input->getOption('title'));
+        }
+
         $releaseDescription = new ReleaseDescription(
             $release,
             $input->getOption('exclude-sub-pull-requests')
         );
-        $output->writeln($releaseDescription->render());
+
+        if ($input->getOption('create-pull-request')) {
+            $pullRequest = $release->createPullRequest($releaseDescription->render());
+            $output->writeln($pullRequest->getUrl());
+        } else {
+            $output->writeln($releaseDescription->render());
+        }
     }
 
     /**

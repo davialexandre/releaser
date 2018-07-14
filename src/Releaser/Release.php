@@ -30,10 +30,23 @@ class Release
 
     /**
      * @var string
+     *  The base branch of this Release. That is, the branch
+     *  to which we want to merge the changes
+     */
+    private $base;
+
+    /**
+     * @var string
      *  The head branch of this Release. That is, the branch
      *  with the changes we want to release
      */
     private $head;
+
+    /**
+     * @var string
+     *  This Release's title
+     */
+    private $title;
 
     /**
      * Creates a new Release
@@ -51,7 +64,9 @@ class Release
     public function __construct(Client $githubClient, $repo, $base, $head)
     {
         $this->repository = new Repository($githubClient, $repo);
+        $this->base = $base;
         $this->head = $head;
+        $this->title = "Sync $base with $head";
         $this->commits = $this->compareBranches($base, $head);
     }
 
@@ -87,6 +102,34 @@ class Release
     public function getHeadBranch(): string
     {
         return $this->head;
+    }
+
+    /**
+     * Sets the title of this Release. Used when creating a Pull Request.
+     *
+     * @param string $title
+     */
+    public function setTitle(string $title): void
+    {
+        $this->title = $title;
+    }
+
+    /**
+     * Creates a Pull Request for this Release
+     *
+     * @param string $description
+     * @return PullRequest
+     *
+     * @throws \Github\Exception\MissingArgumentException
+     */
+    public function createPullRequest(string $description): PullRequest
+    {
+        return $this->repository->createPullRequest(
+            $this->title,
+            $description,
+            $this->base,
+            $this->head
+        );
     }
 
     /**
