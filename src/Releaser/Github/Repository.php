@@ -105,8 +105,8 @@ class Repository
     private function parseRepository(string $repository): array
     {
         $matches = [];
-        if (!preg_match('/^(\w+?)\/(\w+?)$/', $repository, $matches)) {
-            throw new InvalidArgumentException(
+        if (!preg_match('/^(\w+?)\/([\w-]+?)$/', $repository, $matches)) {
+            throw new \InvalidArgumentException(
                 'Invalid repository. It must be a string in the "username/repository" format'
             );
         }
