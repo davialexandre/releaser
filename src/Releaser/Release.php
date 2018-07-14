@@ -29,6 +29,13 @@ class Release
     private $commits;
 
     /**
+     * @var string
+     *  The head branch of this Release. That is, the branch
+     *  with the changes we want to release
+     */
+    private $head;
+
+    /**
      * Creates a new Release
      *
      * @param Client $githubClient
@@ -44,6 +51,7 @@ class Release
     public function __construct(Client $githubClient, $repo, $base, $head)
     {
         $this->repository = new Repository($githubClient, $repo);
+        $this->head = $head;
         $this->commits = $this->compareBranches($base, $head);
     }
 
@@ -68,6 +76,17 @@ class Release
         }
 
         return $pullRequests;
+    }
+
+    /**
+     * Returns the head branch of this Release. That is, the branch with the changes
+     * we want to merge
+     *
+     * @return string
+     */
+    public function getHeadBranch(): string
+    {
+        return $this->head;
     }
 
     /**

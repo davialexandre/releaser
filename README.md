@@ -48,6 +48,30 @@ Pull requests included:
 - My second pull request: https://github.com/company/project/pull/4
 ```
 
+### Excluding sub Pull Requests
+
+Consider this git tree with multiple levels of branches:
+
+```
+* master
+    |
+    |
+     \*staging
+     |
+     |
+     |\*feature1
+     | |
+     | |\*sub-feature-1
+     | |
+     | |
+     | |\*sub-feature-2
+     |\*feature2
+```
+
+Now, say you want to release `staging` to `master`  and that all the branches in this example have already been merged to its "parent" branch. In this scenario, by default, the release description will include the Pull Requests for all branches (even `sub-feature-1` and `sub-feature-2`). This happens, because the merge commits for these branches are part of the history of its "parents". 
+
+Sometimes, however, you might prefer for the description to include only the Pull Requests sent directly to the branch you want to release. In that case, the `--exclude-sub-pull-requests` option can be used. Using this option with the previous example, only the Pull Requests for `feature1` and `feature2` will be include in the description. 
+ 
 ## Known limitations
 
 - It's not possible two release across forks. The two given branches must exist in the given repository

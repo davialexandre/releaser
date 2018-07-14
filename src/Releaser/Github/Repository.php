@@ -230,7 +230,7 @@ class Repository
      *
      * @return \Github\Api\PullRequest
      */
-    private function pullRequestApi()
+    private function pullRequestApi(): \Github\Api\PullRequest
     {
         return $this->client->pullRequest();
     }

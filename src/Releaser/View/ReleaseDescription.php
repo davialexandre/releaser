@@ -2,6 +2,7 @@
 
 namespace Releaser\View;
 
+use Releaser\Github\PullRequest;
 use Releaser\Release;
 
 /**
@@ -19,9 +20,17 @@ class ReleaseDescription
      */
     private $release;
 
-    public function __construct(Release $release)
+    /**
+     * @var bool
+     *  Whether the description will only include Pull Requests sent to
+     *  the Release's head branch or not
+     */
+    private $excludeSubPullRequests;
+
+    public function __construct(Release $release, bool $excludeSubPullRequests)
     {
         $this->release = $release;
+        $this->excludeSubPullRequests = $excludeSubPullRequests;
     }
 
     /**
@@ -68,11 +77,35 @@ class ReleaseDescription
     {
         $pullRequestsGroupByAuthor = [];
         foreach ($this->release->getPullRequests() as $pullRequest) {
+            if ($this->shouldExcludePullRequest($pullRequest)) {
+                continue;
+            }
             $pullRequestsGroupByAuthor[$pullRequest->getAuthor()][] = $pullRequest;
         }
 
         ksort($pullRequestsGroupByAuthor);
 
         return $pullRequestsGroupByAuthor;
+    }
+
+    /**
+     * Returns whether the given $pullRequest should be included in the description
+     * or not.
+     *
+     * If 'excludeSubPullRequests' is true, then only Pull Requests targeting the
+     * Release's head (i.e. Pull Requests which the base branch is the Release's
+     * head branch) will be included. Otherwise, all Pull Requests will be
+     * included.
+     *
+     * @param PullRequest $pullRequest
+     * @return bool
+     */
+    private function shouldExcludePullRequest(PullRequest $pullRequest): bool
+    {
+        if (!$this->excludeSubPullRequests) {
+            return false;
+        }
+
+        return $pullRequest->getBaseBranchName() !== $this->release->getHeadBranch();
     }
 }

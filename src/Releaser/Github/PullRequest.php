@@ -51,4 +51,13 @@ class PullRequest
         return $this->pullRequestData['html_url'];
     }
 
+    /**
+     * Returns the name of the base branch of this Pull Request
+     *
+     * @return string
+     */
+    public function getBaseBranchName(): string
+    {
+        return $this->pullRequestData['base']['ref'];
+    }
 }
