@@ -3,6 +3,8 @@
 namespace Releaser\Github;
 
 use Github\Client;
+use Github\ResultPager;
+use InvalidArgumentException;
 
 /**
  * Represents a Repository in Github
@@ -62,13 +64,51 @@ class Repository
      * @param Branch $base
      * @param Branch $head
      *
-     * @return Comparison
+     * @return Commit[]
      */
-    public function compareBranches(Branch $base, Branch $head): Comparison
+    public function compareBranches(Branch $base, Branch $head): array
     {
-        $comparisonData = $this->compareApi($base->getCommit(), $head->getCommit());
+        $divergeCommit = $this->getDivergeCommit($base, $head);
 
-        return new Comparison($comparisonData);
+        $params = [
+            $this->repositoryInfo['username'],
+            $this->repositoryInfo['repository'],
+            [
+                'sha' => $head->getCommit()->getHash(),
+            ]
+        ];
+
+        $pager = new ResultPager($this->client);
+        $commitsApi = $this->repoApi()->commits();
+        // Set the size to the maximum allowed by the API
+        // to reduce the number of requests
+        $commitsApi->setPerPage(100);
+        $response = $pager->fetch($commitsApi, 'all', $params);
+
+        $commits = [];
+        foreach ($response as $commitData) {
+            $commit = new Commit($commitData);
+            if ($commit->equalsTo($divergeCommit)) {
+                return $commits;
+            }
+
+            $commits[] = $commit;
+        }
+
+        while($pager->hasNext()) {
+            $response = $pager->fetchNext();
+            foreach ($response as $commitData) {
+                $commit = new Commit($commitData);
+                if ($commit->equalsTo($divergeCommit)) {
+                    return $commits;
+                }
+
+                $commits[] = $commit;
+            }
+
+        }
+
+        return $commits;
     }
 
     /**
@@ -162,6 +202,27 @@ class Repository
             $baseCommit->getHash(),
             $headCommit->getHash()
         );
+    }
+
+    /**
+     * Returns the Commit in which $head diverged from $base.
+     *
+     * For example, consider this repository tree:
+     *   A_E *master
+     *    \_B_C_D *staging
+     *
+     * In this example, this method would return commit A
+     *
+     * @param Branch $base
+     * @param Branch $head
+     *
+     * @return Commit
+     */
+    public function getDivergeCommit(Branch $base, Branch $head): Commit
+    {
+        $compareData = $this->compareApi($base->getCommit(), $head->getCommit());
+
+        return new Commit($compareData['merge_base_commit']);
     }
 
     /**

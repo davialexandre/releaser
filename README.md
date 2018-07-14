@@ -50,5 +50,4 @@ Pull requests included:
 
 ## Known limitations
 
-- To get a list of the commits included in a release, we use the Github's [compare API](https://developer.github.com/v3/repos/commits/#compare-two-commits), which only returns up to 250 commits. If there more commits than that between the two branches, the release description might not include all the Pull Requests
 - It's not possible two release across forks. The two given branches must exist in the given repository

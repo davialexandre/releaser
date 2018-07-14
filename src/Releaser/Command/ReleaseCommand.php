@@ -50,10 +50,6 @@ class ReleaseCommand extends Command
             $input->getArgument('head')
         );
 
-        if($release->getTotalNumberOfCommits() > $release->getNumberOfCommits()) {
-            $output->writeln($this->getApiLimitWarningBlock());
-        }
-
         $releaseDescription = new ReleaseDescription($release);
         $output->writeln($releaseDescription->render());
     }
@@ -61,7 +57,7 @@ class ReleaseCommand extends Command
     /**
      * @return \Github\Client
      */
-    private function getGithubClient()
+    private function getGithubClient(): \Github\Client
     {
         $client = new \Github\Client();
         $config = ConfigFactory::create();
@@ -75,16 +71,5 @@ class ReleaseCommand extends Command
         }
 
         return $client;
-    }
-
-    private function getApiLimitWarningBlock()
-    {
-        $formatter = $this->getHelper('formatter');
-        $message = [
-            'Warning',
-            'Due to the Github API limits, not all commits have been processed for this release. Some Pull Requests might not have been included'
-        ];
-
-        return $formatter->formatBlock($message, 'info');
     }
 }

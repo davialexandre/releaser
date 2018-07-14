@@ -68,4 +68,17 @@ class Commit
     {
         return '/Merge pull request #(\d+?) from/';
     }
+
+    /**
+     * Returns if this Commit is equal to $commit.
+     *
+     * Two commits are equal if they have the same hash
+     *
+     * @param Commit $commit
+     * @return bool
+     */
+    public function equalsTo(Commit $commit): bool
+    {
+        return $this->getHash() === $commit->getHash();
+    }
 }
