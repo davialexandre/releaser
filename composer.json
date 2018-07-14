@@ -1,7 +1,7 @@
 {
   "name": "davialexandre/releaser",
   "description": "A script to create release Pull Requests",
-  "minimum-stability": "dev",
+  "minimum-stability": "stable",
   "license": "mit",
   "authors": [
     {
@@ -10,7 +10,7 @@
     }
   ],
   "require": {
-    "knplabs/github-api": "^2.7",
+    "knplabs/github-api": "^2.8",
     "php-http/guzzle6-adapter": "^1.1",
     "symfony/console": "^4.0"
   },
