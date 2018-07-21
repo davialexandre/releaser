@@ -6,6 +6,10 @@ By default, it will only output the Release's description. To create the descrip
 
 Optionally, it can also create a Pull Request with this description.
 
+## System requirements
+
+- PHP 7.1+
+
 ## Installation
 
 Just download the .phar file from the latest release at https://github.com/davialexandre/releaser/releases and place it somewhere in your system (preferably a folder in your PATH). Don't forget to give it +x permission.
@@ -85,7 +89,11 @@ It is also possible to specify the title of the Pull Request using the `---title
 > **Important**
 >
 > In order to be able create Pull Requests, a Github Auth Token will be necessary (see [Configuration](#configuration)). It is also necessary for the owner of the token to have permission to create Pull Requests in the repository.
- 
+
+## Building
+
+[Box](https://box-project.github.io/box2/) is used to build an executable phar file for this project. Assuming `box` is already installed and available in your `PATH`, you can build a new phar by running `box build` in the root folder of this project.
+
 ## Known limitations
 
 - It's not possible two release across forks. The two given branches must exist in the given repository
